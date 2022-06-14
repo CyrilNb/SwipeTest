@@ -3,18 +3,23 @@ package com.example.swipetest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.swipetest.ui.theme.ClubstestTheme
 import com.example.swipetest.domain.Profile
 import com.example.swipetest.ui.composables.CardStack
 import com.example.swipetest.ui.composables.Header
+import com.example.swipetest.ui.theme.ClubstestTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,20 +113,27 @@ fun MainView() {
         )
     )
 
-
     val profiles = remember { mutableListOf(profile1, profile2, profile3, profile4, profile5) }
+
+    val matchesCounter: MutableState<Int> = remember { mutableStateOf(0) }
 
     Column(Modifier.fillMaxSize()) {
 
         Header(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 20.dp, end = 0.dp)
+                .padding(start = 20.dp, end = 0.dp),
+            matchesCounter = matchesCounter
         )
 
         CardStack(
             modifier = Modifier,
             profiles = profiles,
+            onSwipeRight = {
+                if (it.isMatch) {
+                    matchesCounter.value++
+                }
+            }
         )
     }
 }

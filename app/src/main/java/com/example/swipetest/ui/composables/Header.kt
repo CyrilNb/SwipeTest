@@ -1,15 +1,10 @@
 package com.example.swipetest.ui.composables
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.FloatingActionButtonDefaults
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ThumbDownAlt
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -19,10 +14,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.swipetest.R
 import com.example.swipetest.ui.theme.Pink
-import com.example.swipetest.ui.theme.Purple200
 
 @Composable
-fun Header(modifier: Modifier) {
+fun Header(modifier: Modifier, matchesCounter: MutableState<Int>) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -56,7 +50,7 @@ fun Header(modifier: Modifier) {
                         radius = this.size.maxDimension
                     )
                 },
-            text = "0",
+            text = matchesCounter.value.toString(),
             fontWeight = FontWeight.ExtraBold,
             color = Color.White,
         )
