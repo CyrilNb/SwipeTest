@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ThumbDownAlt
-import androidx.compose.material.icons.filled.ThumbUpAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,14 +15,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
+import com.example.swipetest.R
 import com.example.swipetest.domain.Profile
 import com.example.swipetest.moveTo
+import com.example.swipetest.ui.theme.*
 import com.example.swipetest.visible
 
 @ExperimentalMaterialApi
@@ -35,7 +37,6 @@ fun CardStack(
     profiles: MutableList<Profile>,
     thresholdConfig: (Float, Float) -> ThresholdConfig = { _, _ -> FractionalThreshold(0.2f) },
     velocityThreshold: Dp = 125.dp,
-    enableButtons: Boolean = false,
     onSwipeLeft: (profile: Profile) -> Unit = {},
     onSwipeRight: (profile: Profile) -> Unit = {},
     onEmptyStack: (lastProfile: Profile) -> Unit = {}
@@ -62,36 +63,45 @@ fun CardStack(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 18.dp)
-            .background(Color.Transparent, shape = RoundedCornerShape(20.dp))
     ) {
         val (buttons, stack) = createRefs()
 
-        if (enableButtons) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(buttons) {
-                        bottom.linkTo(parent.bottom)
-                        top.linkTo(stack.bottom)
-                    },
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(buttons) {
+                    bottom.linkTo(parent.bottom)
+                    top.linkTo(stack.bottom)
+                }
+                .offset(y = (-25).dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            FloatingActionButton(
+                onClick = { if (lastItemIndex >= 0) cardStackController.swipeLeft() },
+                backgroundColor = Pink,
+                elevation = FloatingActionButtonDefaults.elevation(4.dp)
             ) {
-                FloatingActionButton(
-                    onClick = { if (lastItemIndex >= 0) cardStackController.swipeLeft() },
-                    backgroundColor = Color.White,
-                    elevation = FloatingActionButtonDefaults.elevation(5.dp)
-                ) {
-                    Icon(Icons.Filled.ThumbDownAlt, contentDescription = "", tint = Color.Red)
-                }
-                Spacer(modifier = Modifier.width(70.dp))
-                FloatingActionButton(
-                    onClick = { if (lastItemIndex >= 0) cardStackController.swipeRight() },
-                    backgroundColor = Color.White,
-                    elevation = FloatingActionButtonDefaults.elevation(5.dp)
-                ) {
-                    Icon(Icons.Filled.ThumbUpAlt, contentDescription = "", tint = Color.Green)
-                }
+                Image(
+                    modifier = Modifier.size(15.dp),
+                    painter = painterResource(R.drawable.ic_cross),
+                    contentDescription = "",
+                )
+            }
+
+            Spacer(modifier = Modifier.width(69.dp))
+
+            FloatingActionButton(
+                onClick = { if (lastItemIndex >= 0) cardStackController.swipeRight() },
+                backgroundColor = Green,
+                elevation = FloatingActionButtonDefaults.elevation(4.dp)
+            ) {
+                Image(
+                    modifier = Modifier.size(18.dp),
+                    painter = painterResource(R.drawable.ic_validate),
+                    contentDescription = "",
+                )
             }
         }
 
@@ -133,27 +143,41 @@ fun Card(modifier: Modifier = Modifier, profile: Profile) {
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .fillMaxSize()
-                .clip(RoundedCornerShape(10.dp)),
+                .fillMaxHeight(0.9f)
+                .clip(RoundedCornerShape(20.dp))
         )
 
+        //Info
         Column(
             modifier = Modifier
+                .fillMaxWidth()
                 .align(Alignment.BottomStart)
-                .padding(10.dp)
+                .background(Color.White, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+                .border(
+                    width = 0.01.dp,
+                    color = BorderColor,
+                    shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
+                )
+
         ) {
             Text(
+                modifier = Modifier
+                    .padding(start = 18.dp, top = 13.dp)
+                    .clickable(onClick = {}), // disable the highlight of the text when dragging
                 text = profile.firstName + ", " + profile.age,
-                color = Color.White,
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 25.sp,
-                modifier = Modifier.clickable(onClick = {}) // disable the highlight of the text when dragging
+                color = Black,
+                fontSize = 32.sp,
+                fontWeight = FontWeight.SemiBold,
             )
+
             Text(
+                modifier = Modifier
+                    .padding(start = 18.dp, bottom = 13.dp)
+                    .clickable(onClick = {}), // disable the highlight of the text when dragging
                 text = profile.city + ", " + profile.country,
-                color = Color.White,
-                fontSize = 20.sp,
-                modifier = Modifier.clickable(onClick = {}) // disable the highlight of the text when dragging
+                color = Color.Gray,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.SemiBold,
             )
         }
     }

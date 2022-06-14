@@ -5,7 +5,8 @@ import androidx.compose.ui.graphics.Color
 val Pink = Color(0xFFFE3C72)
 val Green = Color(0xFF4CD964)
 val Black = Color(0xFF1F1F1F)
-val Grey = Color(0xFF666666)
+val Gray = Color(0xFF666666)
+val BorderColor = Color(0x80666666)
 
 //Default colors
 val Purple200 = Color(0xFFBB86FC)

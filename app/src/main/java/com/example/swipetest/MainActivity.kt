@@ -3,7 +3,6 @@ package com.example.swipetest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
@@ -122,8 +121,7 @@ fun MainView() {
 
         CardStack(
             modifier = Modifier,
-            enableButtons = true,
-            profiles = profiles
+            profiles = profiles,
         )
     }
 }
