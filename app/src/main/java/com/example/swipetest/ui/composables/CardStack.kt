@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -146,6 +148,7 @@ fun Card(modifier: Modifier = Modifier, profile: Profile) {
         val pagerState = rememberPagerState()
         val scope = rememberCoroutineScope()
 
+        //Photos
         HorizontalPager(state = pagerState, count = profile.photosURL.size, userScrollEnabled = false) { photo ->
             AsyncImage(
                 model = profile.photosURL[photo],
@@ -154,15 +157,25 @@ fun Card(modifier: Modifier = Modifier, profile: Profile) {
                 modifier = Modifier
                     .fillMaxHeight(0.9f)
                     .clip(RoundedCornerShape(20.dp))
-                    .clickable {
-                        if (currentPage != profile.photosURL.lastIndex) scope.launch {
-                            pagerState.scrollToPage(currentPage + 1)
-                        }
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = {
+                                if (currentPage != profile.photosURL.lastIndex) scope.launch {
+                                    pagerState.scrollToPage(currentPage + 1)
+                                }
+                            },
+
+                            onDoubleTap = {
+                                if (currentPage != 0) scope.launch {
+                                    pagerState.scrollToPage(currentPage - 1)
+                                }
+                            }
+                        )
                     }
             )
         }
 
-        //Info
+        //Details
         Column(
             modifier = Modifier
                 .fillMaxWidth()
