@@ -1,34 +1,38 @@
 package com.example.swipetest.ui.composables
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.*
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import com.example.swipetest.R
 import com.example.swipetest.domain.Profile
 import com.example.swipetest.moveTo
-import com.example.swipetest.ui.theme.*
+import com.example.swipetest.ui.theme.Black
+import com.example.swipetest.ui.theme.BorderColor
+import com.example.swipetest.ui.theme.Green
+import com.example.swipetest.ui.theme.Pink
 import com.example.swipetest.visible
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.launch
 
 @ExperimentalMaterialApi
 @Composable
@@ -127,7 +131,6 @@ fun CardStack(
                             scaleX = if (index < lastItemIndex) cardStackController.scale.value else 1f,
                             scaleY = if (index < lastItemIndex) cardStackController.scale.value else 1f
                         ),
-//                        .shadow(4.dp, RoundedCornerShape(10.dp)),
                     item
                 )
             }
@@ -135,17 +138,29 @@ fun CardStack(
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Card(modifier: Modifier = Modifier, profile: Profile) {
     Box(modifier) {
-        AsyncImage(
-            model = profile.photosURL.first(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxHeight(0.9f)
-                .clip(RoundedCornerShape(20.dp))
-        )
+
+        val pagerState = rememberPagerState()
+        val scope = rememberCoroutineScope()
+
+        HorizontalPager(state = pagerState, count = profile.photosURL.size, userScrollEnabled = false) { photo ->
+            AsyncImage(
+                model = profile.photosURL[photo],
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxHeight(0.9f)
+                    .clip(RoundedCornerShape(20.dp))
+                    .clickable {
+                        if (currentPage != profile.photosURL.lastIndex) scope.launch {
+                            pagerState.scrollToPage(currentPage + 1)
+                        }
+                    }
+            )
+        }
 
         //Info
         Column(
