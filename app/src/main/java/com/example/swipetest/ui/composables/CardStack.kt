@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import com.example.swipetest.R
 import com.example.swipetest.domain.Profile
 import com.example.swipetest.moveTo
@@ -120,7 +120,7 @@ fun CardStack(
             )
             .fillMaxHeight(0.9f)
         ) {
-            profiles.asReversed().forEachIndexed { index, item ->
+            profiles.asReversed().forEachIndexed { index, profile ->
                 Card(
                     modifier = Modifier
                         .moveTo(
@@ -133,7 +133,7 @@ fun CardStack(
                             scaleX = if (index < lastItemIndex) cardStackController.scale.value else 1f,
                             scaleY = if (index < lastItemIndex) cardStackController.scale.value else 1f
                         ),
-                    item
+                    profile = profile
                 )
             }
         }
@@ -150,10 +150,11 @@ fun Card(modifier: Modifier = Modifier, profile: Profile) {
 
         //Photos
         HorizontalPager(state = pagerState, count = profile.photosURL.size, userScrollEnabled = false) { photo ->
-            AsyncImage(
+            SubcomposeAsyncImage(
                 model = profile.photosURL[photo],
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
+                loading = { CircularProgressIndicator() },
                 modifier = Modifier
                     .fillMaxHeight(0.9f)
                     .clip(RoundedCornerShape(20.dp))

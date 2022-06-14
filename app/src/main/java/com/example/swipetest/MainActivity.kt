@@ -89,7 +89,7 @@ fun MainView() {
         lastName = "Day",
         city = "Santa Cruz",
         country = "USA 🇺🇸",
-        isMatch = true,
+        isMatch = false,
         photosURL = listOf(
             "https://firebasestorage.googleapis.com/v0/b/plugcoinprod.appspot.com/o/takehomeAssets%2Fdude_01.jpg?alt=media&token=92774d10-ef37-4c36-8d1d-e151871b6ea2",
             "https://firebasestorage.googleapis.com/v0/b/plugcoinprod.appspot.com/o/takehomeAssets%2Fdude_02.jpg?alt=media&token=a37a38dc-f4ac-4e8e-a9eb-1678d037d21a",
@@ -133,7 +133,7 @@ fun MainView() {
                 if (it.isMatch) {
                     matchesCounter.value++
                 }
-            }
+            },
         )
     }
 }
